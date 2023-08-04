@@ -45,9 +45,11 @@
             ?>
         </h3>
         <form action="main.php" method="post" enctype="multipart/form-data">
-            Abra um arquivo de escala:
-            <input type="file" name="file"> <br><br>
-            <input type="submit" value="Processar">
+            Abra um arquivo de escala:<br>
+            <input type="file" name="file"><br>
+            <input type="submit" name="send" value="Enviar"><br>
+            <br>
+            <input type="submit" name="new" value="Criar arquivo padrão">
         </form>
     </main>
 </body>
