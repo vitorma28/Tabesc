@@ -1,5 +1,5 @@
 <?php 
-if (!isset($_FILES['file']) || !isset($_POST['new'])) {
+if (!isset($_FILES['file']) && !isset($_POST['new'])) {
     header("location: index.php");
     exit;
 }
