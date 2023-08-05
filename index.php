@@ -35,16 +35,16 @@
 </head>
 <body>
     <main>
-        <h3>
-            <?php 
-            if (isset($_GET['e'])) {
-                if ($_GET['e'] == 1) {
-                    echo "Você não pode enviar esse arquivo.";
-                }
-            }
-            ?>
-        </h3>
         <form action="main.php" method="post" enctype="multipart/form-data">
+            <h3>
+                <?php 
+                if (isset($_GET['e'])) {
+                    if ($_GET['e'] == 1) {
+                        echo "Você não pode enviar esse arquivo.";
+                    }
+                }
+                ?>
+            </h3><br>
             Abra um arquivo de escala:<br>
             <input type="file" name="file"><br>
             <input type="submit" name="send" value="Enviar"><br>

@@ -6,30 +6,25 @@ if (!isset($_FILES['file']) && !isset($_POST['new'])) {
 
 if (isset($_POST['send'])) {
     $filename = $_FILES['file']['name'];
-}
-else {
-    $filename = "table.json";
-}
-$ext = explode('.', $filename);
-$ext2 = $ext[count($ext) - 1];
+    $ext = explode('.', $filename);
 
-if ($ext2 != 'json') {
-    header("location: index.php?e=1");
-    exit;
-}
+    $ext2 = $ext[count($ext) - 1];
 
-if (isset($_POST['send'])) {
+    if ($ext2 != 'json') {
+        header("location: index.php?e=1");
+        exit;
+    }
+
     $handler = fopen($_FILES['file']['tmp_name'], 'r');
     $content = fread($handler, filesize($_FILES['file']['tmp_name']));
     fclose($handler);
 }
 else {
-    $content = "{\"data\": {\"month\": \"JANEIRO\"}, \"persons\": []}";
+    $filename = "table.json";
+    $content = "{\"data\": {\"month\": \"JANEIRO\"}, \"persons\": [{\"name\": \"Perfil\", \"workload\": 0, \"days\": [\"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\"], \"hoursworked\": 0}]}";
 }
 
-$jsontophp = json_decode($content);
-
-$scale = $jsontophp;
+$scale = json_decode($content);
 
 ?>
 <!DOCTYPE html>
@@ -488,7 +483,31 @@ function toggleProfile() {
 }
 
 function createProfile() {
-    document.getElementsByTagName('tbody')[0].innerHTML += '<tr class="person"><td><textarea class="name">' + document.getElementById('cname').value + '</textarea></td><td><textarea class="workload">0</textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td><textarea class="day"></textarea></td><td class="hoursworked">0</td></tr>'
+    let tbody = document.getElementsByTagName('tbody')[0]
+
+    let tr = document.createElement('tr')
+
+    let name = document.createElement('td')
+    name.appendChild(document.createElement('textarea'))
+
+    let workload = document.createElement('td')
+    workload.appendChild(document.createElement('textarea'))
+    
+    let hoursworked = document.createElement('td')
+    hoursworked.appendChild(document.createTextNode('0'))
+
+    tr.appendChild(name)
+    tr.appendChild(workload)
+
+    for (let i = 0; i < 31; i++) {
+        let day = document.createElement('td')
+        day.appendChild(document.createElement('textarea'))
+        tr.appendChild(day)
+    }
+
+    tr.appendChild(hoursworked)
+    
+    tbody.appendChild(tr)
     document.getElementById('cname').value = ''
     toDownload()
     toggleProfile()
