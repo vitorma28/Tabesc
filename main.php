@@ -488,7 +488,9 @@ function createProfile() {
     let tr = document.createElement('tr')
 
     let name = document.createElement('td')
-    name.appendChild(document.createElement('textarea'))
+    let namedefault = document.createElement('textarea')
+    namedefault.appendChild(document.createTextNode(document.getElementById('cname').value))
+    name.appendChild(namedefault)
 
     let workload = document.createElement('td')
     workload.appendChild(document.createElement('textarea'))
@@ -506,7 +508,7 @@ function createProfile() {
     }
 
     tr.appendChild(hoursworked)
-    
+
     tbody.appendChild(tr)
     document.getElementById('cname').value = ''
     toDownload()
