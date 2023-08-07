@@ -133,6 +133,9 @@ $scale = json_decode($content);
             padding: 10px;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"
+			integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+			crossorigin="anonymous"></script>
 </head>
 <body>
     <header>
@@ -289,170 +292,79 @@ $scale = json_decode($content);
     </aside>
 
     <script defer>
-var jsonnow = <?php echo $content; ?>
 
-function getAll() {
-    let jsonafter = {
-        data: {
-            month: document.getElementById('month').value
-        },
-        persons: []
-    }
-    let persons = document.getElementsByClassName('person')
-    if (persons.length != 0) {
-        let count = 0
-        for (let p of persons) {
-            let hoursworked = 0
-            jsonafter.persons[count] = {
-                name: p.getElementsByClassName('name')[0].value,
-                workload: p.getElementsByClassName('workload')[0].value,
-                days: [],
-                hoursworked: p.getElementsByClassName('hoursworked')[0].innerHTML
-            }
-            /**
-             * @type {HTMLTextAreaElement[]} days 
-             */
-            let days = p.getElementsByClassName('day')
-            let daymonth = 1
-            for (const d of days) {
-                let date = new Date()
-                let month
-                switch (jsonafter.data.month) {
-                    case "JANEIRO":
-                        month = 0
-                        break
-                    case "FEVEREIRO":
-                        month = 1
-                        break
-                    case "MARÇO":
-                        month = 2
-                        break
-                    case "ABRIL":
-                        month = 3
-                        break
-                    case "MAIO":
-                        month = 4
-                        break
-                    case "JUNHO":
-                        month = 5
-                        break
-                    case "JULHO":
-                        month = 6
-                        break
-                    case "AGOSTO":
-                        month = 7
-                        break
-                    case "SETEMBRO":
-                        month = 8
-                        break
-                    case "OUTUBRO":
-                        month = 9
-                        break
-                    case "NOVEMBRO":
-                        month = 10
-                        break
-                    case "DEZEMBRO":
-                        month = 11
-                        break
-                
-                    default:
-                        throw new Error('Invalid value for "month"')
-                }
-                date.setDate(daymonth)
-                date.setMonth(month)
-                d.className = ''
-                d.classList.add('day')
-                d.classList.add(`d${date.getDay() + 1}`)
-                d.classList.add(`dm${daymonth}`)
-                jsonafter.persons[count].days.push(d.value)
-                if (d.value.trim() == 'M') hoursworked += 6
-                else if (d.value.trim() == 'T') hoursworked += 6
-                else if (d.value.trim() == 'MT') hoursworked += 12
-                else if (d.value.trim() == 'N') hoursworked += 12
-                daymonth++
-            }
-            jsonafter.persons[count].hoursworked = hoursworked
-            p.getElementsByClassName('hoursworked')[0].innerHTML = hoursworked
-            count++
-        }
-    }
-    return jsonafter
+//var jsonnow = <?php echo $content; ?> constants
+
+const monthchoice = {
+    JANEIRO: 0,
+    FEVEREIRO: 1,
+    'MARÇO': 2,
+    ABRIL: 3,
+    MAIO: 4,
+    JUNHO: 5,
+    JULHO: 6,
+    AGOSTO: 7,
+    SETEMBRO: 8,
+    OUTUBRO: 9,
+    NOVEMBRO: 10,
+    DEZEMBRO: 11
 }
 
-function removeAllDays() {
-    let jsonafter = {
-        data: {
-            month: document.getElementById('month').value
-        },
-        persons: []
+//extra-functions
+
+function countDays(days, daymonth, jsonafter, count) {
+    for (const d of days) {
+        let date = new Date()
+        let month = jsonafter.data.month
+        month = monthchoice[month]
+
+        date.setDate(daymonth)
+        date.setMonth(month)
+        
+        d.className = ''
+        d.classList.add('day')
+        d.classList.add(`d${date.getDay() + 1}`)
+        d.classList.add(`dm${daymonth}`)
+        
+        jsonafter.persons[count].days.push(d.value)
+        if (d.value.trim() == 'M') hoursworked += 6
+        else if (d.value.trim() == 'T') hoursworked += 6
+        else if (d.value.trim() == 'MT') hoursworked += 12
+        else if (d.value.trim() == 'N') hoursworked += 12
+        daymonth++
     }
-    let persons = document.getElementsByClassName('person')
-    if (persons.length != 0) {
-        let count = 0
-        for (let p of persons) {
-            jsonafter.persons[count] = {
-                name: p.getElementsByClassName('name')[0].value,
-                workload: p.getElementsByClassName('workload')[0].value,
-                days: [],
-                hoursworked: p.getElementsByClassName('hoursworked')[0].innerHTML
-            }
-            /**
-             * @type {HTMLTextAreaElement[]} days 
-             */
-            let days = p.getElementsByClassName('day')
-            let daymonth = 1
-            for (const d of days) {
-                let date = new Date()
-                let month
-                switch (jsonafter.data.month) {
-                    case "JANEIRO":
-                        month = 0
-                        break
-                    case "FEVEREIRO":
-                        month = 1
-                        break
-                    case "MARÇO":
-                        month = 2
-                        break
-                    case "ABRIL":
-                        month = 3
-                        break
-                    case "MAIO":
-                        month = 4
-                        break
-                    case "JUNHO":
-                        month = 5
-                        break
-                    case "JULHO":
-                        month = 6
-                        break
-                    case "AGOSTO":
-                        month = 7
-                        break
-                    case "SETEMBRO":
-                        month = 8
-                        break
-                    case "OUTUBRO":
-                        month = 9
-                        break
-                    case "NOVEMBRO":
-                        month = 10
-                        break
-                    case "DEZEMBRO":
-                        month = 11
-                        break
-                
-                    default:
-                        throw new Error('Invalid value for "month"')
-                }
-                date.setDate(daymonth)
-                date.setMonth(month)
-                d.value = ''
-                daymonth++
-            }
-            count++
-        }
+}
+
+function addItems(tbody) {
+    let tr = $('<tr />', {class: 'person'})
+
+    let name = $('<td />')
+    let stdname = $('<textarea />', {class: 'name'})
+    stdname.text(document.getElementById('cname').value)
+    name.append(stdname)
+
+    let workload = $('<td />')
+    let stdworkload = $('<textarea />', {class: 'workload'})
+    stdworkload.val('0')
+    workload.append(stdworkload)
+
+    let hoursworked = $('<td />', {class: 'hoursworked'})
+    hoursworked.text('0')
+
+    tr.append(name)
+    tr.append(workload)
+
+    for (let i = 0; i < 31; i++) {
+        let day = document.createElement('td')
+        let stdday = document.createElement('textarea')
+        stdday.classList.add('day')
+        day.append(stdday)
+        tr.append(day)
     }
+
+    tr.append(hoursworked)
+
+    tbody.append(tr)
 }
 
 function calcMTsNs() {
@@ -467,50 +379,99 @@ function calcMTsNs() {
                 addn++
             }
         }
-        document.getElementById(`mt${daym}`).innerHTML = addmt
-        document.getElementById(`n${daym}`).innerHTML = addn
+        $(`#mt${daym}`).html(addmt)
+        $(`#n${daym}`).html(addn)
+    }
+}
+
+//main-functions
+
+function getAll() {
+    let jsonafter = {
+        data: {
+            month:  $('#month').val()
+        },
+        persons: []
+    }
+    let persons = document.getElementsByClassName('person')
+    if (persons.length != 0) {
+        let count = 0
+        for (let p of persons) {
+            let hoursworked = 0
+            jsonafter.persons[count] = {
+                name: $(p).find('.name').val(),
+                workload: $(p).find('.workload').val(),
+                days: [],
+                hoursworked: $(p).find('.hoursworked').html()
+            }
+            
+            let days = p.getElementsByClassName('day')
+
+            countDays(days, 1, jsonafter, count)
+
+            jsonafter.persons[count].hoursworked = hoursworked
+            p.getElementsByClassName('hoursworked')[0].innerHTML = hoursworked
+
+            count++
+        }
+    }
+    return jsonafter
+}
+
+function removeAllDays() {
+    let jsonafter = {
+        data: {
+            month: $('#month').val()
+        },
+        persons: []
+    }
+    let persons = document.getElementsByClassName('person')
+    if (persons.length != 0) {
+        let count = 0
+
+        for (let p of persons) {
+            jsonafter.persons[count] = {
+                name: p.getElementsByClassName('name')[0].value,
+                workload: p.getElementsByClassName('workload')[0].value,
+                days: [],
+                hoursworked: p.getElementsByClassName('hoursworked')[0].innerHTML
+            }
+            /**
+             * @type {HTMLTextAreaElement[]} days 
+             */
+            let days = p.getElementsByClassName('day')
+            let daymonth = 1
+            for (const d of days) {
+                let date = new Date()
+                let month = jsonafter.data.month
+                month = monthchoice[month]
+                date.setDate(daymonth)
+                date.setMonth(month)
+                d.value = ''
+                daymonth++
+            }
+            count++
+        }
     }
 }
 
 function toDownload() {
     calcMTsNs()
-    document.getElementById('jsontable').value = JSON.stringify(getAll())
+    $('#jsontable').val(JSON.stringify(getAll()))
 }
 
 function toggleProfile() {
-    document.getElementById('profile_extend').classList.toggle('visible')
-    document.getElementById('profile_extend').classList.toggle('hidden')
+    $('#profile_extend').toggleClass('visible')
+    $('#profile_extend').toggleClass('hidden')
 }
 
 function createProfile() {
-    let tbody = document.getElementsByTagName('tbody')[0]
+    let tbody = $('tbody')
 
-    let tr = document.createElement('tr')
+    addItems(tbody)
 
-    let name = document.createElement('td')
-    let namedefault = document.createElement('textarea')
-    namedefault.appendChild(document.createTextNode(document.getElementById('cname').value))
-    name.appendChild(namedefault)
+    $('#cname').val('')
 
-    let workload = document.createElement('td')
-    workload.appendChild(document.createElement('textarea'))
-    
-    let hoursworked = document.createElement('td')
-    hoursworked.appendChild(document.createTextNode('0'))
-
-    tr.appendChild(name)
-    tr.appendChild(workload)
-
-    for (let i = 0; i < 31; i++) {
-        let day = document.createElement('td')
-        day.appendChild(document.createElement('textarea'))
-        tr.appendChild(day)
-    }
-
-    tr.appendChild(hoursworked)
-
-    tbody.appendChild(tr)
-    document.getElementById('cname').value = ''
     toDownload()
     toggleProfile()
 }
@@ -518,13 +479,17 @@ function createProfile() {
 function removeProfile() {
     let index = 0
     for (const p in document.getElementsByClassName('person')) {
-        if (document.getElementsByClassName('person')[p].children.item(0).children.item(0).value.toString().toLowerCase().trim() == document.getElementById('rname').value.toString().toLowerCase().trim()) {
+        if (document.getElementsByClassName('person')[p]
+            .children.item(0)
+            .children.item(0)
+            .value.toString().toLowerCase().trim() == document.getElementById('rname').value.toString().toLowerCase().trim()) {
             document.getElementsByClassName('person')[p].remove()
             break
         }
     }
 
     document.getElementById('rname').value = ''
+
     toDownload()
     toggleProfile()
 }

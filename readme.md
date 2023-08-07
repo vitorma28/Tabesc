@@ -19,8 +19,9 @@ A tabela será baixada em formato JSON
 
 ## Alterações
 
+Atual: 1.0.1: Inicio da modulação, parte 1; inserção da biblioteca jquery
 Alpha 1.0.0: Ao adicionar perfil, nome dado agora aparece; Criação do readme.md
 
 ### Versão
 
-Alpha 1.0.0
+1.0.1
